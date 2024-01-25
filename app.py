@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import psycopg2
 import os
 from dotenv import load_dotenv
@@ -7,8 +7,8 @@ app = Flask(__name__)
 
 load_dotenv()
 
-@app.route('/products', methods=['GET'])
-def get_products():
+@app.route('/cards', methods=['GET'])
+def get_cards():
     try:
         connection = psycopg2.connect(
             dbname=os.getenv('DB_NAME'),
@@ -20,15 +20,27 @@ def get_products():
 
         cursor = connection.cursor()
 
-        cursor.execute("SELECT * FROM cartas")
-        products = cursor.fetchall()
+        card_name = request.args.get('cardName')
+        booster = request.args.get('booster')
+
+        sql_query = "SELECT * FROM cartas WHERE TRUE"
+        if card_name:
+            sql_query += f" AND nombre ILIKE '%{card_name}%'"
+
+        if booster:
+            sql_query += f" AND booster = '{booster}'"
+
+        cursor.execute(sql_query)
+
+        cards = cursor.fetchall()
 
         result = []
-        for product in products:
+        for card in cards:
             result.append({
-                'id': product[0],
-                'productName': product[1],
-                'imageUrl': product[2]
+                'id': card[0],
+                'cardName': card[1],
+                'imageUrl': card[2],
+                'booster': card[3]
             })
 
         return jsonify(result)
