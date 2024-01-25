@@ -18,6 +18,21 @@ def get_products():
             port=os.getenv('DB_PORT', 5432)
         )
 
+        cursor = connection.cursor()
+
+        cursor.execute("SELECT * FROM cartas")
+        products = cursor.fetchall()
+
+        result = []
+        for product in products:
+            result.append({
+                'id': product[0],
+                'productName': product[1],
+                'imageUrl': product[2]
+            })
+
+        return jsonify(result)
+
     except Exception as e:
         return jsonify({'error': str(e)})
 
