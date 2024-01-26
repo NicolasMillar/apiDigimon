@@ -40,7 +40,6 @@ def get_cards():
                 'id': card[0],
                 'cardName': card[1],
                 'imageUrl': card[2],
-                'booster': card[3]
             })
 
         return jsonify(result)
