@@ -38,8 +38,8 @@ def get_cards():
         for card in cards:
             result.append({
                 'id': card[0],
-                'cardName': card[1],
-                'imageUrl': card[2],
+                'nombre': card[1],
+                'img_url': card[2],
             })
 
         return jsonify(result)
